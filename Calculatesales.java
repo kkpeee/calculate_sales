@@ -11,7 +11,8 @@ import java.util.HashMap;
 public class Calculatesales {
 		public static void main(String[]args) throws IOException{
 			
-			final String  er = "予期せぬエラーが発生しました";
+			
+			
 			
 			if(args.length == 0 || args.length > 1  || !new File(args[0]).exists()){
 				System.out.println("er");
@@ -23,7 +24,7 @@ public class Calculatesales {
 			//商品定義ファイルMap
 			HashMap<String, String> commodityMap = new HashMap<String, String>();
 			//売り上げMap(支店コード・商品コードをkey、金額をvalueに格納)
-			HashMap<String, Long> rcdBranch = new HashMap<String, Long>();
+			HashMap<String, Long> rcdBranchMap = new HashMap<String, Long>();
 			HashMap<String, Long> rcdCommodity = new HashMap<String, Long>();
 			
 			//支店定義ファイルの読み込み、フォーマットチェック、存在判定
@@ -88,22 +89,120 @@ public class Calculatesales {
 	            System.out.println("支店定義ファイルが見つかりません。");
 	        }
 			
-			//ディレクトリ内のファイル取得			
+			// ディレクトリのファイル一覧を取得
 			String path = args[0];
 			File folder = new File(path);
-				File[] folderList = folder.listFiles();
-				ArrayList<String> rcdList = new ArrayList<String>();
-				for(int i = 0; i < folderList.length; i++){
-					// 拡張子がrcdのファイルを検索
-					if(folderList[i].getName().endsWith(".rcd") && folderList[i].isFile()){
-						rcdList.add(folderList[i].getName());
-					}
-					System.out.println(rcdList);
+			File[] folderList = folder.listFiles(); // dir内のファイルを配列に格納
+
+			// 売上ファイル格納
+			ArrayList<String> rcdFolder = new ArrayList<String>();
+			ArrayList<Integer> rcdNo = new ArrayList<Integer>();
+
+			// 売上ファイル抽出
+			for (File value : folderList) { // 
+				File inputFile = value;
+				if (inputFile.getName().matches("^\\d{8}.rcd$")) { // 数字8桁、rcdファイル検索
+					rcdFolder.add(inputFile.getName());
+					String[] rcdSplit = inputFile.getName().split("\\.");
+					rcdNo.add( new Integer(rcdSplit[0]).intValue());
 				}
+			}
+
+//			System.out.println(rcdNo);
+					
+			// 連番処理
+			for (int i = 0; i < rcdNo.size(); i++) {
+				if(rcdNo.get(i) != i + 1){
+					System.out.println("売上ファイル名が連番になっていません");
+					return;
+				}
+			}
+			
+			//売り上げファイル読み込み
+			
+			BufferedReader br = null;
+			for(int i = 0; i < rcdFolder.size(); i++){
+				try{
+					br = new BufferedReader(new FileReader(new File(folder, rcdFolder.get(i))));
+					String readLine;
+					ArrayList<String> rcdEarings = new ArrayList<String>();
+					while((readLine = br.readLine()) != null){
+						rcdEarings.add(readLine); //get(0)001,get(1)SFT0001,get(2)10000
+					}
+					//売り上げファイルの中身が４行以上ある場合フォーマットエラー
+					if((rcdEarings.size() != 3)) {
+						System.out.println(rcdFolder.get(i) + "のフォーマットが不正です");
+						return;				
+				}
+					if (!branchMap.containsKey(rcdEarings.get(0))) {
+						System.out.println(rcdFolder.get(i) + "の支店コードが不正です");
+						return;
+					
+					}
 				
-				for(int i = 0; i < folderList.length; i++)
-					System.out.println(folderList[i]);
-		
+				}catch(Exception e){
+					System.out.println("予期せぬエラーが発生しました");
+					return;
+				}
+				finally{
+					if(br != null){
+						br.close();
+					}
+				}
+			}
+			return;
+
+					
+					
+					
+					
+					
+//			//ディレクトリ内のファイル取得			
+//			String path = args[0];
+//			File folder = new File(path);
+//				File[] folderList = folder.listFiles();
+//				ArrayList<String> rcdList = new ArrayList<String>();
+//				for(int i = 0; i < folderList.length; i++){
+//					// 拡張子がrcdのファイルを検索
+//					if(folderList[i].getName().endsWith(".rcd") && folderList[i].isFile()){
+//						rcdList.add(folderList[i].getName());
+//					}
+////					System.out.println(rcdList);
+////					System.out.println(rcdList.size());
+//				}
+//				
+////				for(int i = 0; i < folderList.length; i++)
+////					System.out.println(folderList[i]);
+//		
+//				// 売上ファイルの格納List
+//				ArrayList<String> rcdFiles = new ArrayList<String>();
+//				ArrayList<Integer> salesNo = new ArrayList<Integer>();
+//
+//				// 売上ファイルの抽出
+//				for (int i = 0; i < folderList.length; i++) { // 配列内の要素の数だけループし一覧を取得
+//					File inputFile = folderList[i];
+//					if (inputFile.getName().matches("^\\d{8}.rcd$") && inputFile.isFile()) { // 数字8桁かつ拡張子がrcdのファイルのみ検索
+//						rcdFiles.add(inputFile.getName());
+//						String[] rcdFileNameSplit = inputFile.getName().split("\\."); 	// "."の前には\\が必要
+//						salesNo.add(Integer.parseInt(rcdFileNameSplit[0]));
+//						
+//						
+////						System.out.println(inputFile);
+////						System.out.println(rcdFileNameSplit[0]);
+////						System.out.println(rcdFileNameSplit[1]);
+//						
+//					}
+//				}
+//
+//				
+//				// 連番エラーのチェック
+//				for (int i = 0; i < salesNo.size(); i++) {
+//					if(salesNo.get(i) != i + 1){
+//						System.out.println("売上ファイル名が連番になっていません");
+//						return;
+//					}
+//				}
+				
 //				BufferedReader br = null;
 //				try{
 //					br = new BufferedReader(new FileReader(folder));
