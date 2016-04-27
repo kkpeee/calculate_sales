@@ -130,70 +130,67 @@ public class Calculatesales {
 				}	
 			
 		//売り上げファイル読み込み
-			
-			BufferedReader br = null;
+		BufferedReader br = null;
 					for(int i = 0; i < rcdFolder.size(); i++){
 							try{
-									br = new BufferedReader(new FileReader(new File(folder, rcdFolder.get(i))));
-										String readLine;
-										ArrayList<String> rcdEarings = new ArrayList<String>();
+								br = new BufferedReader(new FileReader(new File(folder, rcdFolder.get(i))));
+								String readLine;
+								ArrayList<String> rcdEarings = new ArrayList<String>();
 										
-												while((readLine = br.readLine()) != null){
+										while((readLine = br.readLine()) != null){
 														rcdEarings.add(readLine); //get(0)001,get(1)SFT0001,get(2)10000
 						
-												}	
+										}	
 												
 												
-												//売り上げファイルの中身が４行以上ある場合フォーマットエラー
-													if((rcdEarings.size() != 3)) {
-															System.out.println(rcdFolder.get(i) + "のフォーマットが不正です");
-															return;				
-													}
+										//売り上げファイルの中身が４行以上ある場合フォーマットエラー
+										if((rcdEarings.size() != 3)) {
+											System.out.println(rcdFolder.get(i) + "のフォーマットが不正です");
+											return;				
+										}
 													
-													//支店別
-															if (!rcdBranchMap.containsKey(rcdEarings.get(0))) {
-																System.out.println(rcdFolder.get(i) + "の支店コードが不正です");
-																return ;
-															}
+										//支店別
+										if (!rcdBranchMap.containsKey(rcdEarings.get(0))) {
+										System.out.println(rcdFolder.get(i) + "の支店コードが不正です");
+										return ;
+										}
 				
 					
-													//商品別
-															if (!rcdCommodityMap.containsKey(rcdEarings.get(1))) {
-																System.out.println(rcdEarings.get(1));
-																//			System.out.println(rcdCommodityMap.entrySet());
-																System.out.println(rcdFolder.get(i) + "の商品コードが不正です");
-																return;
-															}
+										//商品別
+										if (!rcdCommodityMap.containsKey(rcdEarings.get(1))) {
+										System.out.println(rcdEarings.get(1));
+										//			System.out.println(rcdCommodityMap.entrySet());
+										System.out.println(rcdFolder.get(i) + "の商品コードが不正です");
+										return;
+										}
 					
-															//支店別集計
-																	if(rcdBranchMap.get(rcdEarings.get(0)) != null){
-
-                    
-																		
-																		long branchMount = rcdBranchMap.get(rcdEarings.get(0));
-																		long branchNewMount = branchMount + Long.parseLong(rcdEarings.get(2));
-																		rcdBranchMap.put(rcdEarings.get(0),branchNewMount);
+										//支店別集計
+										if(rcdBranchMap.get(rcdEarings.get(0)) != null){
+												
+										long branchMount = rcdBranchMap.get(rcdEarings.get(0));
+										long branchNewMount = branchMount + Long.parseLong(rcdEarings.get(2));
+										rcdBranchMap.put(rcdEarings.get(0),branchNewMount);
 //                          System.out.println(rcdBranchMap);
 //                           System.out.println(rcdFolder.get(i) +"の合計金額は"+branchNewMount+"です");
                             
-																		if(String.valueOf(branchNewMount).length() > 10){
-																			System.out.println("支店別の合計金額が10桁を超えました");
-																		}
-																	}
+										if(String.valueOf(branchNewMount).length() > 10){
+										System.out.println("支店別の合計金額が10桁を超えました");
+										}
+									}
 
-																	//商品別の売上合計
-																	if(rcdCommodityMap.get(rcdEarings.get(1)) != null){
+										//商品別の売上合計
+										if(rcdCommodityMap.get(rcdEarings.get(1)) != null){
 
-																	//商品別集計
-																			long commodityMount = rcdCommodityMap.get(rcdEarings.get(1));
-																			long commodityNewMount = commodityMount + Long.parseLong(rcdEarings.get(2));
-																			rcdCommodityMap.put(rcdEarings.get(1),commodityNewMount);
+											//商品別集計
+											long commodityMount = rcdCommodityMap.get(rcdEarings.get(1));
+											long commodityNewMount = commodityMount + Long.parseLong(rcdEarings.get(2));
+															rcdCommodityMap.put(rcdEarings.get(1),commodityNewMount);
 
 //                           System.out.println(rcdFolder.get(i) +"の合計金額は"+commodityNewMount+"です");
-																		if(String.valueOf(commodityNewMount).length() > 10){
-																			System.out.println("商品別の合計金額が10桁を超えました");
-																		}	
-																	}
+														if(String.valueOf(commodityNewMount).length() > 10){
+														System.out.println("商品別の合計金額が10桁を超えました");
+														}	
+										}
 					
 					
 							}catch(Exception e){
