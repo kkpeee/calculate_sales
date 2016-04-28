@@ -31,36 +31,34 @@ public class Calculatesales {
 	HashMap<String, Long> rcdCommodityMap = new HashMap<String, Long>();
 			
 	
-		// 支店定義ファイルの読み込み、フォーマットチェック、存在判定
+	 // 支店定義ファイルの読み込み、フォーマットチェック、存在判定
 			try {
 				File branch = new File(args[0] + File.separator + "branch.lst");
-						FileReader frBranch = new FileReader(branch);
-						BufferedReader br = new BufferedReader(frBranch);
-						
-						String line;
-						
-						while ((line = br.readLine()) != null) {
-							String[] words =line.split(",");
-							
-							try {
-								
-								if (words.length != 2 || !words[0].matches("^\\d{3}$")|| words[1].matches( "[a-zA-Z_0-9]*$")) {
-									System.out.println("定義ファイルのフォーマットが不正です");
-									}
-								
-								for(int i = 0; i < words.length; i++){
-									branchMap.put(words[0],words[1]);// [0]支店コード　[1]支店名
-									rcdBranchMap.put(words[0],0L);
-									}
-								
-								} catch (Exception e) {
-									
-									System.out.println("予期せぬエラーが発生しました");
-									frBranch.close();
-									}
+				FileReader frBranch = new FileReader(branch);
+				BufferedReader br = new BufferedReader(frBranch);
+
+				String line;
+
+				while ((line = br.readLine()) != null) {
+					String[] words =line.split(",");
+					try {
+
+						if (words.length != 2 || !words[0].matches("^\\d{3}$")|| words[1].matches( "[a-zA-Z_0-9]*$")) {
+							System.out.println("定義ファイルのフォーマットが不正です");
 							}
-	            
+								
+						for(int i = 0; i < words.length; i++){
+							branchMap.put(words[0],words[1]);// [0]支店コード　[1]支店名
+							rcdBranchMap.put(words[0],0L);
+							}
+								
+					} catch (Exception e) {
+									
+						System.out.println("予期せぬエラーが発生しました");
 						frBranch.close();
+						}
+					}
+				frBranch.close();
 	            
 			} catch (IOException e) {
 				System.out.println("支店定義ファイルが見つかりません。");
@@ -69,7 +67,7 @@ public class Calculatesales {
 				}
 		
 			
-		// 商品定義ファイルの読み込み
+	// 商品定義ファイルの読み込み、フォーマットチェック、存在判定
 			try {
 				File commodity = new File(args[0], "commodity.lst");
 				FileReader frCommodity = new FileReader(commodity);
@@ -78,11 +76,8 @@ public class Calculatesales {
 				String line;
 	            
 				while ((line = br.readLine()) != null) {
-					
 					String[] words =line.split(",");
-					
 					try {
-						
 						if (words.length != 2 || !words[0].matches( "^\\w{8}$")|| words[1].matches( "[0-9]*$")) {
 							System.out.println("定義ファイルのフォーマットが不正です");
 							}
@@ -98,8 +93,7 @@ public class Calculatesales {
 							}
 					
 					}
-				frCommodity.close();
-	            
+				frCommodity.close();   
 			} catch (IOException e) {
 				System.out.println("商品定義ファイルが見つかりません。");
 				
@@ -107,17 +101,17 @@ public class Calculatesales {
 					
 				}
 			
-		// ディレクトリのファイル一覧を取得
+	// ディレクトリのファイル一覧を取得
 			String path = args[0];
 			File folder = new File(path);
 			File[] folderList = folder.listFiles(); // dir内のファイルを配列に格納
 
-		// 売上ファイル格納
+	// 売上ファイル格納
 			ArrayList<String> rcdFolder = new ArrayList<String>();
 			ArrayList<Integer> rcdNo = new ArrayList<Integer>();
 
-		// 売上ファイル抽出
-			for (File value : folderList) { // 
+	// 売上ファイル抽出
+			for (File value : folderList) { 
 				File inputFile = value;
 				
 				if (inputFile.getName().matches("^\\d{8}.rcd$")) { // 数字8桁、rcdファイル検索
@@ -129,7 +123,7 @@ public class Calculatesales {
 					}
 				}
 					
-		// 連番処理
+	// 連番処理
 			for (int i = 0; i < rcdNo.size(); i++) {
 				
 				if(rcdNo.get(i) != i + 1){
@@ -138,7 +132,7 @@ public class Calculatesales {
 					}
 				}	
 			
-		// 売り上げファイル読み込み
+	// 売り上げファイル読み込み
 			BufferedReader br = null;
 			for(int i = 0; i < rcdFolder.size(); i++){
 				
@@ -152,26 +146,26 @@ public class Calculatesales {
 					}	
 												
 												
-					// 売り上げファイルの中身が４行以上ある場合フォーマットエラー
+				// 売り上げファイルの中身が４行以上ある場合フォーマットエラー
 					if((rcdEarings.size() != 3)) {
 						System.out.println(rcdFolder.get(i) + "のフォーマットが不正です");
 						return;
 						}
 													
-					// 支店別コードエラー処理
+				// 支店別コードエラー処理
 					if (!rcdBranchMap.containsKey(rcdEarings.get(0))) {
 						System.out.println(rcdFolder.get(i) + "の支店コードが不正です");
 						return ;
 						}
 				
 
-					// 商品別コードエラー処理
+				// 商品別コードエラー処理
 					if (!rcdCommodityMap.containsKey(rcdEarings.get(1))) {
 						System.out.println(rcdEarings.get(1));System.out.println(rcdFolder.get(i) + "の商品コードが不正です");
 						return;
 						}
 					
-					// 支店別集計
+				// 支店別集計
 					if(rcdBranchMap.get(rcdEarings.get(0)) != null){
 					
 						long branchMount = rcdBranchMap.get(rcdEarings.get(0));
@@ -184,10 +178,10 @@ public class Calculatesales {
 							}
 						}
 
-					// 商品別の売上合計
+				// 商品別の売上合計
 					if(rcdCommodityMap.get(rcdEarings.get(1)) != null){
 
-						//商品別集計
+					// 商品別集計
 						long commodityMount = rcdCommodityMap.get(rcdEarings.get(1));
 						long commodityNewMount = commodityMount + Long.parseLong(rcdEarings.get(2));
 						rcdCommodityMap.put(rcdEarings.get(1),commodityNewMount);
@@ -208,7 +202,7 @@ public class Calculatesales {
 						}
 				}
 
-			//支店別集計ファイル作成
+		// 支店別集計ファイル作成
 			BufferedWriter bw = null;
 			
 			try{
