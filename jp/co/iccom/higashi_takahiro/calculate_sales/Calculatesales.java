@@ -64,7 +64,7 @@ public class Calculatesales {
 			}
 		frBranch.close();
 		} catch (IOException e) {
-			System.out.println("支店定義ファイルが見つかりません。");
+			System.out.println("支店定義ファイルが存在しません");
 			} finally {
 				
 			}
@@ -72,7 +72,7 @@ public class Calculatesales {
 			
 	// 商品定義ファイルの読み込み、フォーマットチェック、存在判定
 	try {
-		File commodity = new File(args[0], "commodity.lst");
+		File commodity = new File(args[0] + File.separator + "commodity.lst");
 		FileReader frCommodity = new FileReader(commodity);
 		BufferedReader br = new BufferedReader(frCommodity);
 		
@@ -92,12 +92,13 @@ public class Calculatesales {
 				}
 			} catch (Exception e) {
 				System.out.println("予期せぬエラーが発生しました");
-				frCommodity.close();
+				frCommodity.close(); 
 			}
-			frCommodity.close(); 
+			
 		}
 		} catch (IOException e) {
-			System.out.println("商品定義ファイルが見つかりません。");
+			System.out.println("商品定義ファイルが存在しません");
+			System.out.println(e);
 			} finally {	
 				
 			}
@@ -162,7 +163,8 @@ public class Calculatesales {
 
 	// 商品別コードエラー処理
 			if (!rcdCommodityMap.containsKey(rcdEarings.get(1))) {
-				System.out.println(rcdEarings.get(1));System.out.println(rcdFolder.get(i) + "の商品コードが不正です");
+//				System.out.println(rcdEarings.get(1));
+				System.out.println(rcdFolder.get(i) + "の商品コードが不正です");
 				return;
 				}
 					
@@ -173,7 +175,7 @@ public class Calculatesales {
 				rcdBranchMap.put(rcdEarings.get(0),branchNewMount);
 //                           System.out.println(rcdFolder.get(i) +"の合計金額は"+branchNewMount+"です");
 				if(String.valueOf(branchNewMount).length() > 10){
-					System.out.println("支店別の合計金額が10桁を超えました");
+					System.out.println("合計金額が10桁を超えました");
 					}
 					
    // 商品別の売上合計
@@ -185,7 +187,7 @@ public class Calculatesales {
 					rcdCommodityMap.put(rcdEarings.get(1),commodityNewMount);
 //                           System.out.println(rcdFolder.get(i) +"の合計金額は"+commodityNewMount+"です");
 					if(String.valueOf(commodityNewMount).length() > 10){
-						System.out.println("商品別の合計金額が10桁を超えました");
+						System.out.println("合計金額が10桁を超えました");
 						}
 					}	
 }
@@ -202,7 +204,7 @@ public class Calculatesales {
 	// 支店別集計ファイル作成
 	BufferedWriter bw = null;
 	try{
-		File branchout = new File(args[0], "branch.out");
+		File branchout = new File(args[0] + File.separator + "branch.out");
 		bw = new BufferedWriter(new FileWriter(branchout));
 		branchout.createNewFile();
                     
@@ -228,7 +230,7 @@ public class Calculatesales {
 	// 商品別集計ファイル作成
 	BufferedWriter bw1 = null;
 	try{
-		File commodityout = new File(args[0], "commodity.out");
+		File commodityout = new File(args[0] + File.separator + "commodity.out");
 		bw1 = new BufferedWriter(new FileWriter(commodityout));
 		commodityout.createNewFile();
 		//ソート降順
