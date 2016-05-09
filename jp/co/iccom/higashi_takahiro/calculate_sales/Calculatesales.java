@@ -47,9 +47,8 @@ public class Calculatesales {
 			String[] words =line.split(",");
 			
 			try {
-				
-				if (words.length != 2 || !words[0].matches("^\\d{3}$")|| words[1].matches( "[a-zA-Z_0-9]*$")) {
-					System.out.println("定義ファイルのフォーマットが不正です");
+				if (words.length != 2 || !words[0].matches("^\\d{2,4}$") || words[1].matches( "[a-zA-Z_0-9]*$")) {
+					System.out.println("支店定義ファイルのフォーマットが不正です");
 					}
 				
 				for(int i = 0; i < words.length; i++){
@@ -82,8 +81,8 @@ public class Calculatesales {
 			String[] words =line.split(",");
 			
 			try {
-				if (words.length != 2 || !words[0].matches( "^\\w{8}$")|| words[1].matches( "[0-9]*$")) {
-					System.out.println("定義ファイルのフォーマットが不正です");
+				if (words.length != 2 || !words[0].matches( "^\\w{7,9}$")|| words[1].matches( "[0-9]*$")) {
+					System.out.println("商品定義ファイルのフォーマットが不正です");
 					}
 				
 				for(int i = 0; i < words.length; i++){
@@ -98,7 +97,6 @@ public class Calculatesales {
 		}
 		} catch (IOException e) {
 			System.out.println("商品定義ファイルが存在しません");
-			System.out.println(e);
 			} finally {	
 				
 			}
@@ -119,7 +117,7 @@ public class Calculatesales {
 			if(inputFile.isFile()){
 				rcdFolder.add(inputFile.getName());
 				}else{
-					System.out.println("rcdフォルダが存在します、削除してください。");	
+					System.out.println("予期せぬエラーが発生しました");	
 					}
 			//フォルダを除けって処理
 			String[] rcdSplit = inputFile.getName().split("\\.");
