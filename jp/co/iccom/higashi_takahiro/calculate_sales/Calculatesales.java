@@ -49,6 +49,7 @@ public class Calculatesales {
 			try {
 				if (words.length != 2 || !words[0].matches("^\\d{2,4}$") || words[1].matches( "[a-zA-Z_0-9]*$")) {
 					System.out.println("支店定義ファイルのフォーマットが不正です");
+					return;
 					}
 				
 				for(int i = 0; i < words.length; i++){
@@ -64,6 +65,7 @@ public class Calculatesales {
 		frBranch.close();
 		} catch (IOException e) {
 			System.out.println("支店定義ファイルが存在しません");
+			return;
 			} finally {
 				
 			}
@@ -81,26 +83,31 @@ public class Calculatesales {
 			String[] words =line.split(",");
 			
 			try {
-				if (words.length != 2 || !words[0].matches( "^\\w{7,9}$")|| words[1].matches( "[0-9]*$")) {
+					if (words.length != 2 || !words[0].matches( "^\\w{7,9}$")|| words[1].matches( "[0-9]*$")) {
 					System.out.println("商品定義ファイルのフォーマットが不正です");
+					return;
 					}
 				
-				for(int i = 0; i < words.length; i++){
+				
+					for(int i = 0; i < words.length; i++){
 					commodityMap.put(words[0],words[1]);
 					rcdCommodityMap.put(words[0],0L);
-				}
-			} catch (Exception e) {
+					}
+					
+				} catch (Exception e) {
 				System.out.println("予期せぬエラーが発生しました");
 				frCommodity.close(); 
-			}
+				}
 			
-		}
+			}
+		frCommodity.close(); 
 		} catch (IOException e) {
 			System.out.println("商品定義ファイルが存在しません");
+			return;
 			} finally {	
 				
 			}
-			
+	
 	// ディレクトリのファイル一覧を取得
 	String path = args[0];
 	File folder = new File(path);
@@ -116,8 +123,11 @@ public class Calculatesales {
 		if (inputFile.getName().matches("^\\d{8}.rcd$")) { // 数字8桁、rcdファイル検索
 			if(inputFile.isFile()){
 				rcdFolder.add(inputFile.getName());
+				
+			
 				}else{
 					System.out.println("予期せぬエラーが発生しました");	
+					return;
 					}
 			//フォルダを除けって処理
 			String[] rcdSplit = inputFile.getName().split("\\.");
@@ -126,8 +136,9 @@ public class Calculatesales {
 		}
 					
 	// 連番処理
-	for (int i = 0; i < rcdNo.size(); i++) {
-		if(rcdNo.get(i) != i + 1){
+	for (int i = 0; i < rcdNo.size(); i++ ) {
+		if(rcdNo.get(i) != i + 1 || folderList[i].isDirectory()){
+
 			System.out.println("売上ファイル名が連番になっていません");
 			return;
 			}
@@ -174,6 +185,7 @@ public class Calculatesales {
 //                           System.out.println(rcdFolder.get(i) +"の合計金額は"+branchNewMount+"です");
 				if(String.valueOf(branchNewMount).length() > 10){
 					System.out.println("合計金額が10桁を超えました");
+					return;
 					}
 					
    // 商品別の売上合計
@@ -186,6 +198,7 @@ public class Calculatesales {
 //                           System.out.println(rcdFolder.get(i) +"の合計金額は"+commodityNewMount+"です");
 					if(String.valueOf(commodityNewMount).length() > 10){
 						System.out.println("合計金額が10桁を超えました");
+						return;
 						}
 					}	
 }
