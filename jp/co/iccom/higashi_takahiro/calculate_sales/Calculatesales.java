@@ -47,7 +47,7 @@ public class Calculatesales {
 			String[] words =line.split(",");
 			
 			try {
-				if (words.length != 2 || !words[0].matches("^\\d{2,4}$") || words[1].matches( "[a-zA-Z_0-9]*$")) {
+				if (words.length != 2 || !words[0].matches("^\\d{3}$") || words[1].matches( "[a-zA-Z_0-9]*$")) {
 					System.out.println("支店定義ファイルのフォーマットが不正です");
 					return;
 					}
@@ -83,7 +83,7 @@ public class Calculatesales {
 			String[] words =line.split(",");
 			
 			try {
-					if (words.length != 2 || !words[0].matches( "^\\w{7,9}$")|| words[1].matches( "[0-9]*$")) {
+					if (words.length != 2 || !words[0].matches( "^\\w{8}$")|| words[1].matches( "[0-9]*$")) {
 					System.out.println("商品定義ファイルのフォーマットが不正です");
 					return;
 					}
@@ -124,10 +124,6 @@ public class Calculatesales {
 			if(inputFile.isFile()){
 				rcdFolder.add(inputFile.getName());
 				
-			
-				}else{
-					System.out.println("予期せぬエラーが発生しました");	
-					return;
 					}
 			//フォルダを除けって処理
 			String[] rcdSplit = inputFile.getName().split("\\.");
